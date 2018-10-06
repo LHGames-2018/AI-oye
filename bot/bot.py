@@ -60,7 +60,7 @@ class Bot:
 
         upgradeList = StorageHelper.read("upgradeList")
 
-        if(self.PlayerInfo.HouseLocation == self.PlayerInfo.Position and self.PlayerInfo.TotalResources >= upgradeList[0][1]):
+        if(self.PlayerInfo.HouseLocation == self.PlayerInfo.Position and upgradeList and self.PlayerInfo.TotalResources >= upgradeList[0][1]):
             upgrade = upgradeList.pop(0)
             StorageHelper.write("upgradeList", upgradeList)
             return create_upgrade_action(upgrade[0])
