@@ -21,7 +21,7 @@ class Bot:
         """
 
 
-        if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or ((self.PlayerInfo.CarryingCapacity - self.PlayerInfo.CarriedRessources) < self.PlayerInfo.CollectingSpeed*100):
+        if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or ((self.PlayerInfo.CarryingCapacity - self.PlayerInfo.CarriedResources) < self.PlayerInfo.CollectingSpeed*100):
 
             action = self.get_move(self.PlayerInfo.Position, self.find_nearest(TileContent.House, gameMap))
         else:
