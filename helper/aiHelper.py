@@ -54,7 +54,8 @@ def create_purchase_action(item):
     item, except for health potions.
         :param item: The type of item to purchase.
     """
-    return _create_action("PurchaseAction", item)
+    actionContent = ActionContent("PurchaseAction", item)
+    return json.dumps(actionContent.__dict__)
 
 
 def create_empty_action():
@@ -63,10 +64,19 @@ def create_empty_action():
     """
     return ""
 
+def create_upgrade_action(upgrade):
+    """
+    Creates an upgrade action the given upgradeType. You need to be ON
+    your house tile for this action to succeed. If you are on any other
+    type of tile, the action will fail.
+        :param item: The type of upgrade.
+    """
+    actionContent = ActionContent("UpgradeAction", upgrade)
+    return json.dumps(actionContent.__dict__)
 
 def _create_action(action_type, target):
     """
-    Private method to convert the action to a string. 
+    Private method to convert the action to a string.
     You shouldn't call this.
     """
     actionContent = ActionContent(action_type, json.dumps(target.__dict__))

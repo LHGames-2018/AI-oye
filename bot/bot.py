@@ -60,7 +60,37 @@ class Bot:
                     self.GameMap[i].append(Tile(TileContent(tileDict["TileContent"]), i, j))
         """
 
+        upgradeList = StorageHelper.read("upgradeList")
+        if (upgradeList == None):
+            upgradeList = []
 
+            upgradeList.append((UpgradeType.CarryingCapacity, 10000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 10000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 15000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 15000))
+            upgradeList.append((UpgradeType.AttackPower, 10000))
+            upgradeList.append((UpgradeType.Defence, 10000))
+            upgradeList.append((UpgradeType.MaximumHealth, 10000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 25000))
+            upgradeList.append((UpgradeType.AttackPower, 15000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 25000))
+            upgradeList.append((UpgradeType.Defence, 15000))
+            upgradeList.append((UpgradeType.MaximumHealth, 15000))
+            upgradeList.append((UpgradeType.AttackPower, 25000))
+            upgradeList.append((UpgradeType.Defence, 25000))
+            upgradeList.append((UpgradeType.MaximumHealth, 25000))
+            upgradeList.append((UpgradeType.AttackPower, 50000))
+            upgradeList.append((UpgradeType.Defence, 50000))
+            upgradeList.append((UpgradeType.MaximumHealth, 50000))
+            upgradeList.append((UpgradeType.AttackPower, 100000))
+            upgradeList.append((UpgradeType.Defence, 100000))
+            upgradeList.append((UpgradeType.MaximumHealth, 100000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 50000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 50000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 100000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 100000))
+
+            StorageHelper.write("upgradeList", upgradeList)
 
     def execute_turn(self, gameMap, visiblePlayers):
         """
@@ -76,20 +106,33 @@ class Bot:
                 self.GameMap[tile.Position.x][tile.Position.y] = tile
 
 
+
+        # Find closest player! True False
+        enemy_pos = enemy_is_close(self.GameMap, self.PlayerInfo, visiblePlayers)
+        if enemy_pos:
+            return create_attack_action(enemy_pos)
+
+        upgradeList = StorageHelper.read("upgradeList")
+
+        if(self.PlayerInfo.HouseLocation == self.PlayerInfo.Position and upgradeList and self.PlayerInfo.TotalResources >= upgradeList[0][1]):
+            upgrade = upgradeList.pop(0)
+            StorageHelper.write("upgradeList", upgradeList)
+            return create_upgrade_action(upgrade[0])
+
+
         if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
             pos = find_next_pos(self.GameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
+            if pos - self.PlayerInfo.Position == Point(0,0):
+                return self.get_move(self.PlayerInfo.Position, self.PlayerInfo.HouseLocation, self.GameMap)
             return create_move_action(pos - self.PlayerInfo.Position)
 
-        closest_resource_pos = find_closest_resource(gameMap, self.PlayerInfo)
+        closest_resource_pos = find_closest_resource(self.GameMap, self.PlayerInfo)
         if Point.Distance(self.PlayerInfo.Position, closest_resource_pos) == 1:
             return create_collect_action(Point(closest_resource_pos.x - self.PlayerInfo.Position.x, closest_resource_pos.y - self.PlayerInfo.Position.y))
             
-        pos = find_next_pos_resource(self.GameMap, self.PlayerInfo, closest_resource_pos)
-        print("Player pos: ", self.PlayerInfo.Position)
-        print("Pos: ", pos)
+        pos = find_next_pos(self.GameMap, self.PlayerInfo, closest_resource_pos, TileContent.Resource)
         if (pos == self.PlayerInfo.Position):
             pos = find_next_pos(self.GameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
-
         return create_move_action(pos - self.PlayerInfo.Position)
 
 
@@ -116,7 +159,7 @@ class Bot:
         """
         pass
 
-    def find_nearest(self,tile_content,gameMap):
+    def find_nearest(self, tile_content, gameMap):
         min_dist = 10000
         tile_to_go = None
 
@@ -129,14 +172,14 @@ class Bot:
 
         return tile_to_go
 
-    def get_move(self, src, dest):
-        if src.x < dest.x:
+    def get_move(self, src, dest, gameMap):
+        if src.x < dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(1, 0) :
             return create_move_action(Point(1, 0))
-        if src.x > dest.x:
+        if src.x > dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(-1, 0):
             return create_move_action(Point(-1, 0))
-        if src.y < dest.y:
+        if src.y < dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(0, 1):
             return create_move_action(Point(0, 1))
-        if src.y > dest.y:
+        if src.y > dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(0, -1):
             return create_move_action(Point(0, -1))
 
     def next_to(self, pos, tileContent, gameMap):
@@ -149,3 +192,4 @@ class Bot:
         if gameMap.getTileAt(Point(pos.x, pos.y - 1)) == tileContent:
             return Point(pos.x, pos.y - 1)
         return None
+   
