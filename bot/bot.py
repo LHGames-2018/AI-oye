@@ -1,11 +1,41 @@
 from helper import *
 from bot.bot_utils import *
-
-
+import os
 
 class Bot:
     def __init__(self):
-        pass
+        # local 66 66
+        # live 132 198
+
+        #self.width = 133
+        #self.height = 199
+        
+        # print(os.environ.get('IS_LOCAL'))
+        # if (os.environ.get('IS_LOCAL')):
+        self.width = 1000
+        self.height = 1000
+
+
+        """
+        tileDict:i
+            TileContent
+            AmountLeft
+            Density
+        """
+        self.GameMap = list()
+        #serializableGameMap = list()
+        for i in range(self.width):
+            self.GameMap.append(list())
+            #serializableGameMap.append(list())
+            for j in range(self.height):
+                self.GameMap[i].append(Tile(TileContent.Empty, i, j))
+                #tileDict = {}
+                #tileDict["TileContent"] = TileContent.Empty.value
+                #serializableGameMap.append(tileDict)
+
+        #StorageHelper.write("GameMap", serializableGameMap)
+
+        
 
     def before_turn(self, playerInfo):
         """
@@ -13,6 +43,22 @@ class Bot:
             :param playerInfo: Your bot's current state.
         """
         self.PlayerInfo = playerInfo
+        """
+        #Rebuild self.GameMap
+        GameMap = StorageHelper.read("GameMap")
+        self.GameMap = list()
+        for i in range(1000):
+            self.GameMap.append(list())
+            for j in range(1000):
+                try:
+                    tileDict = GameMap[i][j]
+                except:
+                    print("i:" + i + " j:" + j)
+                if tileDict["TileContent"] == TileContent.Resource:
+                    self.GameMap[i].append(ResourceTile(TileContent(tileDict["TileContent"]), i, j, tileDict["AmountLeft"], tileDict["Density"]))
+                else:
+                    self.GameMap[i].append(Tile(TileContent(tileDict["TileContent"]), i, j))
+        """
 
         upgradeList = StorageHelper.read("upgradeList")
         if (upgradeList == None):
@@ -53,6 +99,14 @@ class Bot:
             :param visiblePlayers:  The list of visible players.
         """
 
+        for row in gameMap.tiles:
+            for tile in row:
+                #print("tile.Position.x", tile.Position.x)
+                #print("tile.Position.y", tile.Position.y)
+                self.GameMap[tile.Position.x][tile.Position.y] = tile
+
+
+
         # Find closest player! True False
         (enemy_dist, enemy_direction) = enemy_is_close(gameMap, self.PlayerInfo, visiblePlayers)
         if enemy_dist == 2.0:
@@ -68,22 +122,41 @@ class Bot:
             return create_upgrade_action(upgrade[0])
 
         if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
-            pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
+            pos = find_next_pos(self.GameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
+            if pos - self.PlayerInfo.Position == Point(0,0):
+                return self.get_move(self.PlayerInfo.Position, self.PlayerInfo.HouseLocation, self.GameMap)
             return create_move_action(pos - self.PlayerInfo.Position)
 
-        closest_resource_pos = find_closest_resource(gameMap, self.PlayerInfo)
+        closest_resource_pos = find_closest_resource(self.GameMap, self.PlayerInfo)
         if Point.Distance(self.PlayerInfo.Position, closest_resource_pos) == 1:
             return create_collect_action(Point(closest_resource_pos.x - self.PlayerInfo.Position.x, closest_resource_pos.y - self.PlayerInfo.Position.y))
             
-        pos = find_next_pos(gameMap, self.PlayerInfo, closest_resource_pos, TileContent.Resource)
+        pos = find_next_pos(self.GameMap, self.PlayerInfo, closest_resource_pos, TileContent.Resource)
         if (pos == self.PlayerInfo.Position):
-            pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
+            pos = find_next_pos(self.GameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
         return create_move_action(pos - self.PlayerInfo.Position)
 
 
     def after_turn(self):
         """
         Gets called after executeTurn
+        """
+        """
+        #serialize GameMap and persist
+        serializableGameMap = list()
+        for i in range(1000):
+            serializableGameMap.append(list())
+            for j in range(1000):
+                tile = self.GameMap[i][j]
+                tileDict = {};
+                tileDict["TileContent"] = tile.TileContent.value
+                if tile.TileContent == TileContent.Resource:
+                    tileDict["AmountLeft"] = tile.AmountLeft
+                    tileDict["Density"] = tile.Density
+                serializableGameMap[i].append(tileDict)
+
+
+        StorageHelper.write("GameMap", serializableGameMap)
         """
         pass
 
@@ -100,14 +173,14 @@ class Bot:
 
         return tile_to_go
 
-    def get_move(self, src, dest):
-        if src.x < dest.x:
+    def get_move(self, src, dest, gameMap):
+        if src.x < dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(src.x+1, src.y) :
             return create_move_action(Point(1, 0))
-        if src.x > dest.x:
+        if src.x > dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(src.x-1, src.y):
             return create_move_action(Point(-1, 0))
-        if src.y < dest.y:
+        if src.y < dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(src.x, src.y+1):
             return create_move_action(Point(0, 1))
-        if src.y > dest.y:
+        if src.y > dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(src.x, src.y-1):
             return create_move_action(Point(0, -1))
 
     def next_to(self, pos, tileContent, gameMap):
