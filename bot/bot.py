@@ -39,6 +39,10 @@ class Bot:
             upgradeList.append((UpgradeType.AttackPower, 100000))
             upgradeList.append((UpgradeType.Defence, 100000))
             upgradeList.append((UpgradeType.MaximumHealth, 100000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 50000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 50000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 100000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 100000))
 
             StorageHelper.write("upgradeList", upgradeList)
 
