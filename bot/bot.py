@@ -10,6 +10,10 @@ class Bot:
         Gets called before ExecuteTurn. This is where you get your bot's state.
             :param playerInfo: Your bot's current state.
         """
+
+
+
+
         self.PlayerInfo = playerInfo
 
     def execute_turn(self, gameMap, visiblePlayers):
@@ -18,6 +22,12 @@ class Bot:
             :param gameMap: The gamemap.
             :param visiblePlayers:  The list of visible players.
         """
+
+        if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or :
+
+
+
+
 
         # Write your bot here. Use functions from aiHelper to instantiate your actions.
         return create_move_action(Point(1, 0))
