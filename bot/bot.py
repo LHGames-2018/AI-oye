@@ -1,4 +1,5 @@
 from helper import *
+from bot.bot_utils import *
 
 
 class Bot:
@@ -18,9 +19,16 @@ class Bot:
             :param gameMap: The gamemap.
             :param visiblePlayers:  The list of visible players.
         """
+        if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
+            pos = find_next_pos(gameMap, self.PlayerInfo.Position, self.PlayerInfo.HouseLocation)
+            return create_move_action(pos)
 
-        # Write your bot here. Use functions from aiHelper to instantiate your actions.
-        return create_move_action(Point(1, 0))
+        closest_resource_pos = find_closest_resource(gameMap, self.PlayerInfo.Position)
+        if Point.Distance(self.PlayerInfo.Position, closest_resource_pos) == 1:
+            return create_collect_action(Point(closest_resource_pos.x - self.PlayerInfo.Position.x, closest_resource_pos.y - self.PlayerInfo.Position.y))
+            
+        pos = find_next_pos(gameMap, self.PlayerInfo.Position, closest_resource_pos)
+        return create_move_action(pos)
 
     def after_turn(self):
         """
