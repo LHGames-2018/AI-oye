@@ -16,12 +16,24 @@ class Bot:
         self.height = 1000
 
 
+        """
+        tileDict:i
+            TileContent
+            AmountLeft
+            Density
+        """
         self.GameMap = list()
-        #self.GameMap = GameMap()
+        #serializableGameMap = list()
         for i in range(self.width):
             self.GameMap.append(list())
+            #serializableGameMap.append(list())
             for j in range(self.height):
                 self.GameMap[i].append(Tile(TileContent.Empty, i, j))
+                #tileDict = {}
+                #tileDict["TileContent"] = TileContent.Empty.value
+                #serializableGameMap.append(tileDict)
+
+        #StorageHelper.write("GameMap", serializableGameMap)
 
         
 
@@ -31,6 +43,24 @@ class Bot:
             :param playerInfo: Your bot's current state.
         """
         self.PlayerInfo = playerInfo
+        """
+        #Rebuild self.GameMap
+        GameMap = StorageHelper.read("GameMap")
+        self.GameMap = list()
+        for i in range(1000):
+            self.GameMap.append(list())
+            for j in range(1000):
+                try:
+                    tileDict = GameMap[i][j]
+                except:
+                    print("i:" + i + " j:" + j)
+                if tileDict["TileContent"] == TileContent.Resource:
+                    self.GameMap[i].append(ResourceTile(TileContent(tileDict["TileContent"]), i, j, tileDict["AmountLeft"], tileDict["Density"]))
+                else:
+                    self.GameMap[i].append(Tile(TileContent(tileDict["TileContent"]), i, j))
+        """
+
+
 
     def execute_turn(self, gameMap, visiblePlayers):
         """
@@ -66,6 +96,23 @@ class Bot:
     def after_turn(self):
         """
         Gets called after executeTurn
+        """
+        """
+        #serialize GameMap and persist
+        serializableGameMap = list()
+        for i in range(1000):
+            serializableGameMap.append(list())
+            for j in range(1000):
+                tile = self.GameMap[i][j]
+                tileDict = {};
+                tileDict["TileContent"] = tile.TileContent.value
+                if tile.TileContent == TileContent.Resource:
+                    tileDict["AmountLeft"] = tile.AmountLeft
+                    tileDict["Density"] = tile.Density
+                serializableGameMap[i].append(tileDict)
+
+
+        StorageHelper.write("GameMap", serializableGameMap)
         """
         pass
 
