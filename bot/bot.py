@@ -1,6 +1,7 @@
 from helper import *
 
 
+
 class Bot:
     def __init__(self):
         pass
@@ -22,11 +23,19 @@ class Bot:
             :param gameMap: The gamemap.
             :param visiblePlayers:  The list of visible players.
         """
+        gameMapDeserialized = gameMap.deserializeMap()
 
-        if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or :
+        if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or ((self.PlayerInfo.CarryingCapacity-self.PlayerInfo.CarriedRessources) < self.PlayerInfo.CollectingSpeed*100):
+
+            action = get_move(self.PlayerInfo.Position,get_position_of_element("House",gameMapDeserialized))
+        else
+            if (next_to_roche(self.PlayerInfo,TileContent.Resource) != null)
+                action = mine roche
+
+                action = get_move(self.PlayerInfo.Position,get_position_of_element("Resource",gameMapDeserialized))
 
 
-
+        return action
 
 
         # Write your bot here. Use functions from aiHelper to instantiate your actions.
@@ -37,3 +46,8 @@ class Bot:
         Gets called after executeTurn
         """
         pass
+
+    def get_position_of_element(self,tile_name,gameMap):
+
+
+        return
