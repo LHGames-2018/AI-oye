@@ -52,6 +52,12 @@ class Bot:
             :param gameMap: The gamemap.
             :param visiblePlayers:  The list of visible players.
         """
+
+        # Find closest player! True False
+        enemy_pos = enemy_is_close(gameMap, self.PlayerInfo, visiblePlayers)
+        if enemy_pos:
+            return create_attack_action(enemy_pos)
+
         upgradeList = StorageHelper.read("upgradeList")
 
         if(self.PlayerInfo.HouseLocation == self.PlayerInfo.Position and upgradeList and self.PlayerInfo.TotalResources >= upgradeList[0][1]):
@@ -68,7 +74,7 @@ class Bot:
         if Point.Distance(self.PlayerInfo.Position, closest_resource_pos) == 1:
             return create_collect_action(Point(closest_resource_pos.x - self.PlayerInfo.Position.x, closest_resource_pos.y - self.PlayerInfo.Position.y))
             
-        pos = find_next_pos_resource(gameMap, self.PlayerInfo, closest_resource_pos)
+        pos = find_next_pos(gameMap, self.PlayerInfo, closest_resource_pos, TileContent.Resource)
         if (pos == self.PlayerInfo.Position):
             pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
         return create_move_action(pos - self.PlayerInfo.Position)
@@ -80,7 +86,7 @@ class Bot:
         """
         pass
 
-    def find_nearest(self,tile_content,gameMap):
+    def find_nearest(self, tile_content, gameMap):
         min_dist = 10000
         tile_to_go = None
 
@@ -113,3 +119,4 @@ class Bot:
         if gameMap.getTileAt(Point(pos.x, pos.y - 1)) == tileContent:
             return Point(pos.x, pos.y - 1)
         return None
+   
