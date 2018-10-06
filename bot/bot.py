@@ -29,8 +29,6 @@ class Bot:
             return create_collect_action(Point(closest_resource_pos.x - self.PlayerInfo.Position.x, closest_resource_pos.y - self.PlayerInfo.Position.y))
             
         pos = find_next_pos_resource(gameMap, self.PlayerInfo, closest_resource_pos)
-        print("Player pos: ", self.PlayerInfo.Position)
-        print("Pos: ", pos)
         return create_move_action(pos - self.PlayerInfo.Position)
 
         if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or ((self.PlayerInfo.CarryingCapacity - self.PlayerInfo.CarriedResources) < self.PlayerInfo.CollectingSpeed*100):

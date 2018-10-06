@@ -53,8 +53,6 @@ def _heuristic(a, b):
     return (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
 
 def a_star(array, start, goal):
-    print("start", start)
-    print("goal", goal)
 
     array = numpy.array(array)
     neighbors = [(0,1),(0,-1),(1,0),(-1,0)]
@@ -90,19 +88,13 @@ def a_star(array, start, goal):
             if xmin <= neighbor[0] < xmax:
                 if ymin <= neighbor[1] < ymax:
                     tile = array[neighbor[0]- xmin][neighbor[1] - ymin]
-                    if tile.TileContent != TileContent.Empty and tile.TileContent != TileContent.House: # or blabla 
-                        print("tile.TileContent", tile.TileContent)
+                    if tile.TileContent != TileContent.Empty and tile.TileContent != TileContent.House: # or blabla
                         continue
                 else:
                     # array bound y walls
-                    print("array bound y walls")
-                    print("")
                     continue
             else:
                 # array bound x walls
-                print("array bound x walls")
-                print("array.shape[0]", array.shape[0])
-
                 continue
                 
             if neighbor in close_set and tentative_g_score >= gscore.get(neighbor, 0):
@@ -141,9 +133,6 @@ def find_next_pos_resource(gameMap, player, goal):
     return next_pos
 
 def a_star_resource(array, start, goal):
-    print("start", start)
-    print("goal", goal)
-
     array = numpy.array(array)
     neighbors = [(0,1),(0,-1),(1,0),(-1,0)]
 
@@ -178,18 +167,13 @@ def a_star_resource(array, start, goal):
             if xmin <= neighbor[0] < xmax:
                 if ymin <= neighbor[1] < ymax:
                     tile = array[neighbor[0]- xmin][neighbor[1] - ymin]
-                    if tile.TileContent != TileContent.Empty and tile.TileContent != TileContent.House and tile.TileContent != TileContent.Resource: # or blabla 
-                        print("tile.TileContent", tile.TileContent)
+                    if tile.TileContent != TileContent.Empty and tile.TileContent != TileContent.House and tile.TileContent != TileContent.Resource: # or blabla
                         continue
                 else:
                     # array bound y walls
-                    print("array bound y walls")
-                    print("")
                     continue
             else:
                 # array bound x walls
-                print("array bound x walls")
-                print("array.shape[0]", array.shape[0])
 
                 continue
                 
