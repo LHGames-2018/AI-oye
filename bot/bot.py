@@ -25,7 +25,7 @@ class Bot:
 
             action = self.get_move(self.PlayerInfo.Position, self.find_nearest(TileContent.House, gameMap))
         else:
-            Pos_res = self.next_to(self.PlayerInfo,TileContent.Resource)
+            Pos_res = self.next_to(self.PlayerInfo,TileContent.Resource,gameMap)
             if (Pos_res == None):
                 action = self.get_move(self.PlayerInfo.Position, self.find_nearest(TileContent.Resource, gameMap))
             else:
