@@ -31,7 +31,8 @@ def find_next_pos(gameMap, player, goal):
     start = (player.Position.x, player.Position.y)
     goal = (goal.x, goal.y)
 
-    path = a_star(gameMap.tiles, start, goal)
+    path = a_star(gameMap, start, goal)
+    #path = a_star(gameMap.tiles, start, goal)
     # print 'Path: ' + str(path)
 
     # No path found
@@ -126,7 +127,8 @@ def find_next_pos_resource(gameMap, player, goal):
     start = (player.Position.x, player.Position.y)
     goal = (goal.x, goal.y)
 
-    path = a_star_resource(gameMap.tiles, start, goal)
+    #path = a_star_resource(gameMap.tiles, start, goal)
+    path = a_star_resource(gameMap, start, goal)
     # print 'Path: ' + str(path)
 
     # No path found

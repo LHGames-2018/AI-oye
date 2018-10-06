@@ -1,11 +1,29 @@
 from helper import *
 from bot.bot_utils import *
-
-
+import os
 
 class Bot:
     def __init__(self):
-        pass
+        # local 66 66
+        # live 132 198
+
+        #self.width = 133
+        #self.height = 199
+        
+        # print(os.environ.get('IS_LOCAL'))
+        # if (os.environ.get('IS_LOCAL')):
+        self.width = 1000
+        self.height = 1000
+
+
+        self.GameMap = list()
+        #self.GameMap = GameMap()
+        for i in range(self.width):
+            self.GameMap.append(list())
+            for j in range(self.height):
+                self.GameMap[i].append(Tile(TileContent.Empty, i, j))
+
+        
 
     def before_turn(self, playerInfo):
         """
@@ -20,20 +38,28 @@ class Bot:
             :param gameMap: The gamemap.
             :param visiblePlayers:  The list of visible players.
         """
+
+        for row in gameMap.tiles:
+            for tile in row:
+                #print("tile.Position.x", tile.Position.x)
+                #print("tile.Position.y", tile.Position.y)
+                self.GameMap[tile.Position.x][tile.Position.y] = tile
+
+
         if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
-            pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
+            pos = find_next_pos(self.GameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
             return create_move_action(pos - self.PlayerInfo.Position)
 
         closest_resource_pos = find_closest_resource(gameMap, self.PlayerInfo)
         if Point.Distance(self.PlayerInfo.Position, closest_resource_pos) == 1:
             return create_collect_action(Point(closest_resource_pos.x - self.PlayerInfo.Position.x, closest_resource_pos.y - self.PlayerInfo.Position.y))
             
-        pos = find_next_pos_resource(gameMap, self.PlayerInfo, closest_resource_pos)
+        pos = find_next_pos_resource(self.GameMap, self.PlayerInfo, closest_resource_pos)
         print("Player pos: ", self.PlayerInfo.Position)
         print("Pos: ", pos)
         if (pos == self.PlayerInfo.Position):
-            pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
-            
+            pos = find_next_pos(self.GameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
+
         return create_move_action(pos - self.PlayerInfo.Position)
 
 
