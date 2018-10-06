@@ -102,13 +102,13 @@ class Bot:
         return tile_to_go
 
     def get_move(self, src, dest, gameMap):
-        if src.x < dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(1, 0) :
+        if src.x < dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(src.x+1, src.y) :
             return create_move_action(Point(1, 0))
-        if src.x > dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(-1, 0):
+        if src.x > dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(src.x-1, src.y):
             return create_move_action(Point(-1, 0))
-        if src.y < dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(0, 1):
+        if src.y < dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(src.x, src.y+1):
             return create_move_action(Point(0, 1))
-        if src.y > dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(0, -1):
+        if src.y > dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(src.x, src.y-1):
             return create_move_action(Point(0, -1))
 
     def next_to(self, pos, tileContent, gameMap):
