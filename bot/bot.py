@@ -14,6 +14,38 @@ class Bot:
         """
         self.PlayerInfo = playerInfo
 
+        upgradeList = StorageHelper.read("upgradeList")
+        if (upgradeList == None):
+            upgradeList = []
+
+            upgradeList.append((UpgradeType.CarryingCapacity, 10000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 10000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 15000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 15000))
+            upgradeList.append((UpgradeType.AttackPower, 10000))
+            upgradeList.append((UpgradeType.Defence, 10000))
+            upgradeList.append((UpgradeType.MaximumHealth, 10000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 25000))
+            upgradeList.append((UpgradeType.AttackPower, 15000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 25000))
+            upgradeList.append((UpgradeType.Defence, 15000))
+            upgradeList.append((UpgradeType.MaximumHealth, 15000))
+            upgradeList.append((UpgradeType.AttackPower, 25000))
+            upgradeList.append((UpgradeType.Defence, 25000))
+            upgradeList.append((UpgradeType.MaximumHealth, 25000))
+            upgradeList.append((UpgradeType.AttackPower, 50000))
+            upgradeList.append((UpgradeType.Defence, 50000))
+            upgradeList.append((UpgradeType.MaximumHealth, 50000))
+            upgradeList.append((UpgradeType.AttackPower, 100000))
+            upgradeList.append((UpgradeType.Defence, 100000))
+            upgradeList.append((UpgradeType.MaximumHealth, 100000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 50000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 50000))
+            upgradeList.append((UpgradeType.CarryingCapacity, 100000))
+            upgradeList.append((UpgradeType.CollectingSpeed, 100000))
+
+            StorageHelper.write("upgradeList", upgradeList)
+
     def execute_turn(self, gameMap, visiblePlayers):
         """
         This is where you decide what action to take.
@@ -25,6 +57,14 @@ class Bot:
         enemy_pos = enemy_is_close(gameMap, self.PlayerInfo, visiblePlayers)
         if enemy_pos:
             return create_attack_action(enemy_pos)
+
+        upgradeList = StorageHelper.read("upgradeList")
+
+        if(self.PlayerInfo.HouseLocation == self.PlayerInfo.Position and self.PlayerInfo.TotalResources >= upgradeList[0][1]):
+            upgrade = upgradeList.pop(0)
+            StorageHelper.write("upgradeList", upgradeList)
+            return create_upgrade_action(upgrade[0])
+
 
         if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
             pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
