@@ -15,8 +15,9 @@ class StorageHelper:
     @staticmethod
     def read(key):
         StorageHelper.__init()
-        data = StorageHelper.__document[key]
-        if data is None:
+        try:
+            data = StorageHelper.__document[key]
+        except:
             return None
         return json.loads(data)
 
