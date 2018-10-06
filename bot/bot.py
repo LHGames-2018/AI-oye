@@ -69,7 +69,7 @@ class Bot:
         if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
             pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
             if pos - self.PlayerInfo.Position == Point(0,0):
-                pos = self.get_move(self.PlayerInfo.Position,self.PlayerInfo.HouseLocation)
+                pos = self.get_move(self.PlayerInfo.Position, self.PlayerInfo.HouseLocation, gameMap)
             return create_move_action(pos - self.PlayerInfo.Position)
 
         closest_resource_pos = find_closest_resource(gameMap, self.PlayerInfo)
@@ -101,14 +101,14 @@ class Bot:
 
         return tile_to_go
 
-    def get_move(self, src, dest):
-        if src.x < dest.x:
+    def get_move(self, src, dest, gameMap):
+        if src.x < dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(1, 0) :
             return create_move_action(Point(1, 0))
-        if src.x > dest.x:
+        if src.x > dest.x and not self.next_to(src, TileContent.Wall, gameMap) == Point(-1, 0):
             return create_move_action(Point(-1, 0))
-        if src.y < dest.y:
+        if src.y < dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(0, 1):
             return create_move_action(Point(0, 1))
-        if src.y > dest.y:
+        if src.y > dest.y and not self.next_to(src, TileContent.Wall, gameMap) == Point(0, -1):
             return create_move_action(Point(0, -1))
 
     def next_to(self, pos, tileContent, gameMap):
