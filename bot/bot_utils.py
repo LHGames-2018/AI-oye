@@ -31,7 +31,7 @@ def enemy_is_close(gameMap, player, visiblePlayers):
         if player_dist == 2 or player_dist == math.sqrt(2):
             directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
             for i,j in directions:
-                if Point.Distance(player.Position + Point(i, j), enemy_pos) == 1:
+                if Point.Distance(player.Position + Point(i, j), enemy_pos) <= 1:
                     return Point(i, j)
     return None
 
