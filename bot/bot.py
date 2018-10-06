@@ -29,19 +29,9 @@ class Bot:
             return create_collect_action(Point(closest_resource_pos.x - self.PlayerInfo.Position.x, closest_resource_pos.y - self.PlayerInfo.Position.y))
             
         pos = find_next_pos_resource(gameMap, self.PlayerInfo, closest_resource_pos)
+        if (pos == self.PlayerInfo.Position):
+            pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
         return create_move_action(pos - self.PlayerInfo.Position)
-
-        if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or ((self.PlayerInfo.CarryingCapacity - self.PlayerInfo.CarriedResources) < self.PlayerInfo.CollectingSpeed*100):
-
-            action = self.get_move(self.PlayerInfo.Position, self.find_nearest(TileContent.House, gameMap).Position)
-        else:
-            Pos_res = self.next_to(self.PlayerInfo.Position,TileContent.Resource,gameMap)
-            if (Pos_res == None):
-                action = self.get_move(self.PlayerInfo.Position, self.find_nearest(TileContent.Resource, gameMap).Position)
-            else:
-                action = create_collect_action(Pos_res)
-
-        return action
 
 
     def after_turn(self):
