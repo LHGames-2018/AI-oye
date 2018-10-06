@@ -1,4 +1,5 @@
 from helper import *
+from bot.bot_utils import *
 
 
 
@@ -19,7 +20,18 @@ class Bot:
             :param gameMap: The gamemap.
             :param visiblePlayers:  The list of visible players.
         """
+        if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
+            pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
+            return create_move_action(pos - self.PlayerInfo.Position)
 
+        closest_resource_pos = find_closest_resource(gameMap, self.PlayerInfo)
+        if Point.Distance(self.PlayerInfo.Position, closest_resource_pos) == 1:
+            return create_collect_action(Point(closest_resource_pos.x - self.PlayerInfo.Position.x, closest_resource_pos.y - self.PlayerInfo.Position.y))
+            
+        pos = find_next_pos_resource(gameMap, self.PlayerInfo, closest_resource_pos)
+        print("Player pos: ", self.PlayerInfo.Position)
+        print("Pos: ", pos)
+        return create_move_action(pos - self.PlayerInfo.Position)
 
         if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or ((self.PlayerInfo.CarryingCapacity - self.PlayerInfo.CarriedResources) < self.PlayerInfo.CollectingSpeed*100):
 
