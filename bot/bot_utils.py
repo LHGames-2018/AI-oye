@@ -62,7 +62,7 @@ def find_next_pos(gameMap, player, goal, tile_objective = TileContent.House):
     goal = (goal.x, goal.y)
 
     path = a_star(gameMap.tiles, start, goal, tile_objective)
-    # print 'Path: ' + str(path)
+    #print 'Path: ' + str(path)
 
     # No path found
     if not path:

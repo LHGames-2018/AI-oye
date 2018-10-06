@@ -68,6 +68,8 @@ class Bot:
 
         if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
             pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)
+            if pos - self.PlayerInfo.Position == Point(0,0):
+                pos = self.get_move(self.PlayerInfo.Position,self.PlayerInfo.HouseLocation)
             return create_move_action(pos - self.PlayerInfo.Position)
 
         closest_resource_pos = find_closest_resource(gameMap, self.PlayerInfo)
