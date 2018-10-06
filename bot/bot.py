@@ -12,8 +12,8 @@ class Bot:
         
         # print(os.environ.get('IS_LOCAL'))
         # if (os.environ.get('IS_LOCAL')):
-        self.width = 1000
-        self.height = 1000
+        self.width = 300
+        self.height = 300
 
 
         """
@@ -106,9 +106,8 @@ class Bot:
                 self.GameMap[tile.Position.x][tile.Position.y] = tile
 
 
-
         # Find closest player! True False
-        (enemy_dist, enemy_direction) = enemy_is_close(gameMap, self.PlayerInfo, visiblePlayers)
+        (enemy_dist, enemy_direction) = enemy_is_close(self.GameMap, self.PlayerInfo, visiblePlayers)
         if enemy_dist == 2.0:
             return create_move_action(enemy_direction)
         elif enemy_dist == 1.0:

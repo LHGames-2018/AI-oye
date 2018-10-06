@@ -15,7 +15,7 @@ def is_wall(tile):
 def find_closest_resource(gameMap, player):
     closest_so_far = None
     closest_dist = 100000000
-    for row in gameMap.tiles:
+    for row in gameMap:
         for tile in row:
             tile_pos = Point(tile.Position.x, tile.Position.y)
             resource_dist =  Point.Distance(player.Position, tile_pos)
@@ -32,7 +32,8 @@ def enemy_is_close(gameMap, player, visiblePlayers):
             directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
             for i,j in directions:
                 if Point.Distance(player.Position + Point(i, j), enemy_pos) == 1.0:
-                    if gameMap.getTileAt(player.Position + Point(i, j)) == TileContent.Wall:
+                    point = player.Position + Point(i, j)
+                    if gameMap[point.x][point.y].TileContent == TileContent.Wall:
                         return (1, Point(i, j))
                     return (player_dist, Point(i, j))
                 elif player.Position + Point(i, j) == enemy_pos:
@@ -57,7 +58,7 @@ def enemy_is_close(gameMap, player, visiblePlayers):
 def find_closest_wall(gameMap, player):
     closest_so_far = None
     closest_dist = 100000000
-    for row in gameMap.tiles:
+    for row in gameMap:
         for tile in row:
             tile_pos = Point(tile.Position.x, tile.Position.y)
             house_dist =  Point.Distance(player.Position, tile_pos)
@@ -79,7 +80,7 @@ def find_next_pos(gameMap, player, goal, tile_objective = TileContent.House):
     start = (player.Position.x, player.Position.y)
     goal = (goal.x, goal.y)
 
-    path = a_star(gameMap, start, goal)
+    path = a_star(gameMap, start, goal, tile_objective)
     #path = a_star(gameMap.tiles, start, goal)
     # print 'Path: ' + str(path)
 
