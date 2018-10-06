@@ -23,17 +23,17 @@ class Bot:
             :param gameMap: The gamemap.
             :param visiblePlayers:  The list of visible players.
         """
-        gameMapDeserialized = gameMap.deserializeMap()
 
-        if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or ((self.PlayerInfo.CarryingCapacity-self.PlayerInfo.CarriedRessources) < self.PlayerInfo.CollectingSpeed*100):
 
-            action = get_move(self.PlayerInfo.Position,get_position_of_element("House",gameMapDeserialized))
-        else
-            if (next_to_roche(self.PlayerInfo,TileContent.Resource) != null)
-                action = mine roche
+        if (self.PlayerInfo.CarriedResources >= self.PlayerInfo.CarryingCapacity) or ((self.PlayerInfo.CarryingCapacity - self.PlayerInfo.CarriedRessources) < self.PlayerInfo.CollectingSpeed*100):
 
-                action = get_move(self.PlayerInfo.Position,get_position_of_element("Resource",gameMapDeserialized))
-
+            action = self.get_move(self.PlayerInfo.Position, self.find_nearest(TileContent.House, gameMap))
+        else:
+            Pos_res = self.next_to(self.PlayerInfo,TileContent.Resource)
+            if (Pos_res == None):
+                action = self.get_move(self.PlayerInfo.Position, self.find_nearest(TileContent.Resource, gameMap))
+            else:
+                action = create_collect_action(Pos_res)
 
         return action
 
@@ -47,10 +47,18 @@ class Bot:
         """
         pass
 
-    def get_position_of_element(self,tile_name,gameMap):
+    def find_nearest(self,tile_content,gameMap):
+        min_dist = 10000
+        tile_to_go = None
 
+        for idx,row in enumerate(gameMap):
+            for idx2,tile in enumerate(row):
+                if tile.TileContent == tile_content:
+                    distance = abs(tile.Position.x) + abs(tile.Position.y)
+                    if distance < min_dist:
+                        tile_to_go = tile
 
-        return
+        return tile_to_go
 
     def get_move(self, src, dest):
         if src.x < dest.x:
@@ -71,4 +79,4 @@ class Bot:
             return Point(pos.x, pos.y + 1)
         if gameMap.getTileAt(Point(pos.x, pos.y - 1)).tileContent == tileContent:
             return Point(pos.x, pos.y - 1)
-        return null
+        return None
