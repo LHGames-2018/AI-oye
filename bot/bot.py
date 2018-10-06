@@ -54,9 +54,11 @@ class Bot:
         """
 
         # Find closest player! True False
-        enemy_pos = enemy_is_close(gameMap, self.PlayerInfo, visiblePlayers)
-        if enemy_pos:
-            return create_attack_action(enemy_pos)
+        (enemy_dist, enemy_direction) = enemy_is_close(gameMap, self.PlayerInfo, visiblePlayers)
+        if enemy_dist == 2.0:
+            return create_move_action(enemy_direction)
+        elif enemy_dist == 1.0:
+            return create_attack_action(enemy_direction)
 
         upgradeList = StorageHelper.read("upgradeList")
 
@@ -64,7 +66,6 @@ class Bot:
             upgrade = upgradeList.pop(0)
             StorageHelper.write("upgradeList", upgradeList)
             return create_upgrade_action(upgrade[0])
-
 
         if self.PlayerInfo.CarriedResources == self.PlayerInfo.CarryingCapacity:
             pos = find_next_pos(gameMap, self.PlayerInfo, self.PlayerInfo.HouseLocation)

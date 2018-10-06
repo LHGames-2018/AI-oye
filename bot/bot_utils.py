@@ -9,8 +9,8 @@ def is_resource(tile):
 def is_house(tile):
     return tile.TileContent == TileContent.House
 
-def is_player(tile):
-    return tile.TileContent == TileContent.Player
+def is_wall(tile):
+    return tile.TileContent == TileContent.Wall
 
 def find_closest_resource(gameMap, player):
     closest_so_far = None
@@ -28,22 +28,40 @@ def enemy_is_close(gameMap, player, visiblePlayers):
     for enemy in visiblePlayers:
         enemy_pos = enemy.Position
         player_dist =  Point.Distance(player.Position, enemy_pos)
-        if player_dist == 2 or player_dist == math.sqrt(2):
+        if player_dist <= 2.0:
             directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
             for i,j in directions:
-                if Point.Distance(player.Position + Point(i, j), enemy_pos) == 1:
-                    return Point(i, j)
-    return None
+                if Point.Distance(player.Position + Point(i, j), enemy_pos) == 1.0:
+                    if gameMap.getTileAt(player.Position + Point(i, j)) == TileContent.Wall:
+                        return (1, Point(i, j))
+                    return (player_dist, Point(i, j))
+                elif player.Position + Point(i, j) == enemy_pos:
+                    
+                    return (player_dist, Point(i, j))
+    return (0, Point(0,0))
 
 # To be used soon...
-def find_closest_steal(gameMap, player):
+# def find_closest_steal(gameMap, player):
+#     closest_so_far = None
+#     closest_dist = 100000000
+#     for row in gameMap.tiles:
+#         for tile in row:
+#             tile_pos = Point(tile.Position.x, tile.Position.y)
+#             house_dist =  Point.Distance(player.Position, tile_pos)
+#             if is_house(tile) and tile_pos != player.HouseLocation and house_dist < closest_dist:
+#                 closest_so_far = tile_pos
+#                 closest_dist = house_dist
+#     return closest_so_far
+
+# Only to test locally
+def find_closest_wall(gameMap, player):
     closest_so_far = None
     closest_dist = 100000000
     for row in gameMap.tiles:
         for tile in row:
             tile_pos = Point(tile.Position.x, tile.Position.y)
             house_dist =  Point.Distance(player.Position, tile_pos)
-            if is_house(tile) and tile_pos != player.HouseLocation and house_dist < closest_dist:
+            if is_wall(tile) and house_dist < closest_dist:
                 closest_so_far = tile_pos
                 closest_dist = house_dist
     return closest_so_far
